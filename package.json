@@ -1,0 +1,33 @@
+{
+  "name": "skileria",
+  "version": "1.0.0",
+  "description": "An initialitive to provide free resourses in organised manner",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "client": "npm start --prefix client",
+    "server": "nodemon",
+    "skileria": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MadMaxINDIAN/SKILERIA.git"
+  },
+  "author": "MadMaxIndian",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MadMaxINDIAN/SKILERIA/issues"
+  },
+  "homepage": "https://github.com/MadMaxINDIAN/SKILERIA#readme",
+  "dependencies": {
+    "chalk": "^4.1.1",
+    "concurrently": "^6.0.2",
+    "cookie-session": "^1.4.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.12.7",
+    "passport": "^0.4.1",
+    "passport-google-oauth20": "^2.0.0"
+  }
+}
