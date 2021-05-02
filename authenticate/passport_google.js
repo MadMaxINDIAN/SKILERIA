@@ -19,6 +19,7 @@ module.exports = (passport) => {
                     if (user) {
                         done(null, user)
                     } else {
+                        console.log(profile._json);
                         const newUser = new User({
                             type: 'google',
                             googleID: profile.id
