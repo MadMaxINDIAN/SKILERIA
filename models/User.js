@@ -10,8 +10,11 @@ const UserSchema = new Schema({
     googleID: {
         type: String,
     },
-    password: {
+    first_name: {
         type: String,
+    },
+    family_name: {
+        type: String
     }
 });
 

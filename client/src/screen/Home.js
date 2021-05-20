@@ -15,6 +15,7 @@ function App() {
         <Navbar page='home' ></Navbar>
         <BrowserView>
             <div className='margin-top-120'></div>
+            <img src='tab_banner.png' className='mobile-banner' alt='Langing page banner'></img>
         </BrowserView>
         <MobileOnlyView>
             <img src='tab_banner.png' className='mobile-banner' alt='Langing page banner'></img>
