@@ -1,11 +1,17 @@
 {
   "name": "skileria",
   "version": "1.0.0",
+  "engines": {
+    "node": "12.16.1"
+  },
   "description": "An initialitive to provide free resourses in organised manner",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "client": "npm start --prefix client",
+    "install-client": "cd client && npm install",
+    "start": "node server.js",
+    "heroku-postbuild": "npm run install-client && npm run build",
     "server": "nodemon",
     "skileria": "concurrently \"npm run server\" \"npm run client\""
   },
