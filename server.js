@@ -25,6 +25,14 @@ const auth = require('./router/auth');
 // Initialising router
 app.use("/auth/",auth);
 
+if (process.env.NODE_ENV !== 'DEVELOPMENT'){
+    app.use(express.static('client/build'))
+    const path  = require('path')
+    app.get("*", (req, res) => {
+        res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'))
+    })
+}
+
 // App listening on PORT
 app.listen(config.SERVER_PORT,() => {
     console.log("Server running on port 5000");
