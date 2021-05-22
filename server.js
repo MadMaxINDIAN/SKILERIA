@@ -35,5 +35,5 @@ if (process.env.NODE_ENV !== 'DEVELOPMENT'){
 
 // App listening on PORT
 app.listen(config.SERVER_PORT,() => {
-    console.log("Server running on port 5000");
+    console.log("Server running on port " + config.SERVER_PORT);
 })
