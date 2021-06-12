@@ -5,7 +5,6 @@
   "engines": {
     "node": "12.16.1"
   },
-  "proxy": "http://localhost:5000/",
   "dependencies": {
     "@popperjs/core": "^2.9.2",
     "@testing-library/jest-dom": "^5.12.0",
