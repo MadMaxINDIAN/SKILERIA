@@ -3,6 +3,7 @@ import {BrowserRouter as Router, Route} from "react-router-dom";
 import store from "./store";
 import './App.css';
 import Home from './screen/Home';
+import Loader from "./components/Loader";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
           <Route exact={true} path="/" component={Home} />
         </div>
       </Router>
+      <Loader />
     </Provider>
   );
 }
