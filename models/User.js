@@ -13,7 +13,16 @@ const UserSchema = new Schema({
     first_name: {
         type: String,
     },
-    family_name: {
+    last_name: {
+        type: String
+    },
+    email: {
+        type: String
+    },
+    is_verified: {
+        type: String
+    },
+    image: {
         type: String
     }
 });

@@ -1,14 +1,12 @@
 // User Authorisation
 const JwtStratergy = require("passport-jwt").Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt;
-const mongoose = require("mongoose");
 const User = require("../models/User");
-const keys = require("./key")
+const { JWT_USER_LOGIN_SECRET_KEY } = require('./../config');
 
 const opts = {}
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-opts.secretOrKey = keys.secretOrKey;
-
+opts.secretOrKey = JWT_USER_LOGIN_SECRET_KEY;
 module.exports = passport => {
     passport.use(
         "user-jwt",

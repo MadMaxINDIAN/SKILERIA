@@ -1,6 +1,7 @@
 const express = require('express')
 const cors = require('cors')
 const config = require('./config')
+const bodyParser = require("body-parser");
 const mongoose = require('mongoose')
 const app = express()
 const passport = require('passport')
@@ -11,7 +12,10 @@ app.use(cookieSession({
     maxAge: 30*24*60*60*1000,
     keys: [config.COOKIE_SESSION_KEY]
 }))
+app.use(express.json());
 app.use(cors())
+app.use(bodyParser.urlencoded({extended : true}))
+app.use(express.json());
 app.use(passport.initialize())
 app.use(passport.session())
 
@@ -20,10 +24,10 @@ mongoose.connect(config.MONGODB_URI + config.DATABASE_NAME,{ useNewUrlParser: tr
 mongoose.set('useFindAndModify', false);
 
 // Routers
-const auth = require('./router/auth');
+const user = require('./router/user');
 
 // Initialising router
-app.use("/auth/",auth);
+app.use("/auth/",user);
 
 if (process.env.NODE_ENV !== 'DEVELOPMENT'){
     app.use(express.static('client/build'))

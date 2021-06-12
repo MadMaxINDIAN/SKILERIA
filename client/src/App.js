@@ -1,11 +1,18 @@
+import {Provider} from "react-redux";
+import {BrowserRouter as Router, Route} from "react-router-dom";
+import store from "./store";
 import './App.css';
 import Home from './screen/Home';
 
 function App() {
   return (
-    <div className="App">
-      <Home></Home>
-    </div>
+    <Provider store={store}>
+      <Router>
+        <div className="App">
+          <Route exact={true} path="/" component={Home} />
+        </div>
+      </Router>
+    </Provider>
   );
 }
 

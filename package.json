@@ -4,6 +4,7 @@
   "engines": {
     "node": "12.16.1"
   },
+  "proxy": "http://localhost:5000/",
   "description": "An initialitive to provide free resourses in organised manner",
   "main": "server.js",
   "scripts": {
@@ -33,11 +34,13 @@
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "google-auth-library": "^7.0.4",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.12.7",
     "passport": "^0.4.1",
     "passport-google-oauth20": "^2.0.0",
-    "react-redux": "^7.2.4",
-    "redux": "^4.1.0",
-    "redux-thunk": "^2.3.0"
+    "passport-jwt": "^4.0.0",
+    "react-google-login": "^5.2.2",
+    "sha1": "^1.1.1"
   }
 }

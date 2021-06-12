@@ -8,6 +8,7 @@ import {
     isMobileOnly,
     TabletView
   } from "react-device-detect";
+import Loader from "../components/Loader";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <TabletView>
             <img src='tab_banner.png' className='mobile-banner' alt='Langing page banner'></img>
         </TabletView>
+        <Loader />
     </div>
   );
 }
