@@ -25,9 +25,11 @@ mongoose.set('useFindAndModify', false);
 
 // Routers
 const user = require('./router/user');
+const course = require('./router/course');
 
 // Initialising router
 app.use("/auth/",user);
+app.use("/course/",course);
 
 if (process.env.NODE_ENV !== 'DEVELOPMENT'){
     app.use(express.static('client/build'))

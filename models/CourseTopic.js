@@ -11,10 +11,14 @@ const Content = new Schema({
         required: true
     },
     videoTime: {
-        type: Number
+        // time in seconds
+        type: Number,
+        default: 0
     },
     readTime: {
-        type: Number
+        // time in seconds
+        type: Number,
+        default: 0
     },
     courseContent: [{
         type: Schema.Types.ObjectId, ref:'CourseContent'

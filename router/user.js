@@ -12,10 +12,12 @@ const { OAuth2Client } = require("google-auth-library")
 const client = new OAuth2Client(GOOGLE_CLIENT_ID)
 
 passport.serializeUser((user, done) => {
+    console.log("Serialize User")
     done(null, user.id)
 })
 
 passport.deserializeUser((id, done) => {
+    console.log("Deserialize User")
     User
         .findById(id)
         .then(user => {
@@ -42,7 +44,6 @@ router.post("/logout", (req, res) => {
 // @type    Public
 router.post("/google", (req, res) => {
     // VALIDATION
-    console.log(req.body.tokenId)
     const { errors, isValid } = validateGoogleTokenId(req.body);
     if (!isValid) {
         LogURL(req, 400);

@@ -1,8 +1,10 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-// type: 1 => Youtube Video
-// type: 2 => Text Content
+// type: YOUTUBE_VIDEO => Youtube Video
+// type: TEXT_CONTENT => Text Content
+// type: BLOG_TYPE_CONTENT => Blog Type Content
+// type: IMAGE_GRAPHIC => Images or graphics
 
 // Create Schema
 const Content = new Schema({

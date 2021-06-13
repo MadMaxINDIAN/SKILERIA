@@ -119,7 +119,7 @@ class Navbar extends Component {
                         <div className='right'>
                                 {this.props.auth.isAuthenticated ? (
                                 <div className='nav-items-mains-right'><div><img src={this.props.auth.user.image} className='nav-profile-img' alt='profile' ></img></div>
-                                <div><p className='profile-name' >Naman</p></div></div>
+                                <div className="profile-name" >Logout <i class="fas fa-sign-out-alt"></i></div></div>
                                 ) : (
                                     <div className='nav-items-mains-right'>
                                     <GoogleLogin
