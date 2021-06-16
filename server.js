@@ -17,18 +17,19 @@ app.use(cors())
 app.use(bodyParser.urlencoded({extended : true}))
 app.use(express.json());
 app.use(passport.initialize())
-app.use(passport.session())
 
 // Connecting mongoose
 mongoose.connect(config.MONGODB_URI + config.DATABASE_NAME,{ useNewUrlParser: true,useUnifiedTopology: true },() => console.log("MongoDB connected"))
 mongoose.set('useFindAndModify', false);
 
 // Routers
+const auth = require('./router/auth');
 const user = require('./router/user');
 const course = require('./router/course');
 
 // Initialising router
-app.use("/auth/",user);
+app.use("/auth/",auth);
+app.use("/u/",user);
 app.use("/course/",course);
 
 if (process.env.NODE_ENV !== 'DEVELOPMENT'){

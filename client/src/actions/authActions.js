@@ -7,6 +7,10 @@ export const google = (tokenId, modal) => dispatch => {
     modal.show()
     axios.post("/auth/google", {tokenId: tokenId}).then(res => {
         setAuthToken(res.data.token);
+        
+        // Set Token to localstorage
+        localStorage.setItem("userJwtToken",res.data.token);
+        
         setTimeout(function(){ modal.hide() }, 500);
         dispatch({
             type: LOGIN_USER,

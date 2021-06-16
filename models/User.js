@@ -24,7 +24,13 @@ const UserSchema = new Schema({
     },
     image: {
         type: String
-    }
+    },
+    courses: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: "Course"
+        }
+    ]
 });
 
 module.exports = User = mongoose.model("User",UserSchema);

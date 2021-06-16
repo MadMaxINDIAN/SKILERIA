@@ -1,149 +1,180 @@
 const express = require("express");
 const LogURL = require("../LogURL");
 const passport = require('passport');
+require('../authenticate/user-passport')(passport)
 const jwt = require('jsonwebtoken');
-require('./../authenticate/user-passport')(passport)
 var sha1 = require("sha1");
-const { JWT_CLIENT_SECRET_KEY, GOOGLE_CLIENT_ID } = require('./../config');
 const router = express.Router();
-const User = require('./../models/User');
-const validateGoogleTokenId = require("./../validation/googleTokenId");
-const { OAuth2Client } = require("google-auth-library")
-const client = new OAuth2Client(GOOGLE_CLIENT_ID)
+const User = require('../models/User');
+const Course = require('../models/Course');
+const validateGoogleTokenId = require("../validation/googleTokenId");
 
-passport.serializeUser((user, done) => {
-    console.log("Serialize User")
-    done(null, user.id)
-})
-
-passport.deserializeUser((id, done) => {
-    console.log("Deserialize User")
-    User
-        .findById(id)
-        .then(user => {
-            done(null, user)
-        })
-        .catch(err => {
-            console.log(err);
-        })
-})
-
-
-// @route   POST /api/u/logout
-// @desc    Logout User
+// @route   POST /u/:userID
+// @desc    Return All Course for userID
 // @type    Private
-router.post("/logout", (req, res) => {
-    return res.status(200).json({
-        status: true,
-        message: "User has been Logged out",
+router.get("/:userID", passport.authenticate('user-jwt',{session:false}), (req, res) => {
+    const errors = {};
+
+    User.findById(req.params.userID)
+    .then( user => {
+        if (user) {
+            return res.status(200).json({
+                status: true,
+                message: "User Course",
+                courses: user.courses
+            })
+        }
+        else {
+            return res.status(300).json({
+                status: false,
+                message: "User not found"
+            })
+        }
+    } )
+    .catch(err => {
+        errors.error = "Server Error or invalid UserId";
+        res.status(500).json({
+            status: false,
+            message: "User Courses Found error",
+            errors: errors
+        })
     })
 })
 
-// @route   POST /api/u/google
-// @desc    Sign Up and Login Google User
-// @type    Public
-router.post("/google", (req, res) => {
-    // VALIDATION
-    const { errors, isValid } = validateGoogleTokenId(req.body);
-    if (!isValid) {
-        LogURL(req, 400);
-        return res.status(400).json({
-            status: false,
-            message: "Data is not received",
-            errors: errors
-        });
-    }
+// @route   POST /u/:userID/add/c/:courseID
+// @desc    Add Course to user Account
+// @type    Private
+router.post("/:userID/add/c/:courseID", passport.authenticate('user-jwt',{session:false}), (req, res) => {
+    const errors = {};
 
-    // Verify Token for GOOGLE Id
-    client.verifyIdToken({
-        idToken: req.body.tokenId,
-        audience: GOOGLE_CLIENT_ID
-    }).then(result => {
-        const { email, family_name, given_name, picture, email_verified } = result.payload;
-        User.findOne({ email })
-        .then(user => {
-            if (user) {
-                if (user.type === "GOOGLE_USER") {
-                    const payload = {
-                        id : user.id,
-                        first_name: user.first_name,
-                        last_name: user.last_name,
-                        email : user.email,
-                        is_verified: user.is_verified,
-                        image: user.image
-                    }
-                    // Sign Token
-                    jwt.sign(payload,
-                        JWT_CLIENT_SECRET_KEY,
-                        {expiresIn : 60*60*24*30},
-                        (err, token) => {
-                            if (err) throw err;
+    User.findById(req.params.userID)
+    .then( user => {
+        if (user) {
+            Course.findById(req.params.courseID)
+            .then(course => {
+                if (course) {
+                    for (var i = 0; i < user.courses.length; i++){
+                        if ("" + user.courses[i] === req.params.courseID) {
                             return res.status(200).json({
                                 status: true,
-                                token: 'Bearer ' + token,
-                                user: payload
+                                message: "Course Already in user Account",
+                                user
                             })
+                        }
+                    }
+                    user.courses.push(course._id);
+                    user.save();
+                    return res.status(200).json({
+                        status: true,
+                        message: "Course added to User Account",
+                        user
                     })
                 }
                 else {
-                    errors.accountType = user.type;
-                    errors.message = "User registered with different account type";
-                    return res.status(400).json({
+                    return res.status(300).json({
                         status: false,
-                        message: "User email is registered with different account Type",
-                        errors: errors
-                    })
+                        message: "Course not found"
+                    })                    
                 }
-            }
-            else {
-                // Register User and than login
-                const user = User({
-                    type: "GOOGLE_USER",
-                    image: result.payload.picture,
-                    first_name: result.payload.given_name,
-                    last_name: result.payload.family_name,
-                    email: result.payload.email,
-                    is_verified: result.payload.email_verified
-                });
-                const payload = {
-                    id : user.id,
-                    first_name: user.first_name,
-                    last_name: user.last_name,
-                    email : user.email,
-                    is_verified: user.is_verified,
-                    image: user.image
-                }
-                // Sign Token
-                jwt.sign(payload,
-                    JWT_CLIENT_SECRET_KEY,
-                    {expiresIn : 60*60*24*30},
-                    (err, token) => {
-                        if (err) throw err;
-                        user.save();
-                        return res.status(200).json({
-                            status: true,
-                            token: 'Bearer ' + token,
-                            user: payload
-                        })
-                })
-            }
-        })
-        .catch(err => {
-            errors.error = err.message || "Server Error";
-            res.status(500).json({
-                status: false,
-                message: "Google User SignUp/LogIn failed",
-                errors: errors
             })
-        })
-    }).catch(err => {
-        errors.error = err.message || "Google Id not verified";
+            .catch(err => {
+                errors.error = "Server Error or Invalid courseID";
+                res.status(500).json({
+                    status: false,
+                    message: "User Courses add ERROR",
+                    errors: errors
+                })
+            })
+        }
+        else {
+            return res.status(300).json({
+                status: false,
+                message: "User not found"
+            })
+        }
+    } )
+    .catch(err => {
+        errors.error = "Server Error or invalid UserId";
         res.status(500).json({
             status: false,
-            message: "Google User SignUp/LogIn failed",
+            message: "User Courses add ERROR",
             errors: errors
         })
     })
 })
+
+// @route   POST /u/:userID/add/c/:courseID
+// @desc    Add Course to user Account
+// @type    Private
+router.post("/:userID/remove/c/:courseID", passport.authenticate('user-jwt',{session:false}), (req, res) => {
+    const errors = {};
+
+    User.findById(req.params.userID)
+    .then( user => {
+        if (user) {
+            Course.findById(req.params.courseID)
+            .then(course => {
+                if (course) {
+                    var found = 0;
+                    const temp = [];
+                    for (var i = 0; i < user.courses.length; i++){
+                        if ("" + user.courses[i] === req.params.courseID) {
+                            found = 1;
+                            continue;
+                        } else {
+                            temp.push(user.courses[i])
+                        }
+                    }
+                    if (found){
+                        user.courses = temp;
+                        user.save();
+                        return res.status(200).json({
+                            status: true,
+                            message: "Course removed from User Account",
+                            user
+                        })
+                    } else {
+                        return res.status(200).json({
+                            status: true,
+                            message: "Course not found in User Account",
+                            user
+                        })
+                    }
+
+                }
+                else {
+                    return res.status(300).json({
+                        status: false,
+                        message: "Course not found"
+                    })                    
+                }
+            })
+            .catch(err => {
+                console.log(err);
+                errors.error = "Server Error or Invalid courseID";
+                res.status(500).json({
+                    status: false,
+                    message: "User Courses remove ERROR",
+                    errors: errors
+                })
+            })
+        }
+        else {
+            return res.status(300).json({
+                status: false,
+                message: "User not found"
+            })
+        }
+    } )
+    .catch(err => {
+        errors.error = "Server Error or Invalid UserId";
+        res.status(500).json({
+            status: false,
+            message: "User Courses remove ERROR",
+            errors: errors
+        })
+    })
+})
+
 
 module.exports = router;
